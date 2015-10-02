@@ -1,6 +1,6 @@
 package be.foreseegroup.micro.resourceservice.resourceapi.service;
 
-import org.apache.http.client.methods.HttpHead;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,15 @@ public class UnitSideService {
     /**
      * Forwards for UNIT
      */
+
+    /**
+     * getAllUnits()
+     *
+     * GET Request to receive a List of all the Units
+     * @return: Iterable<Object> - In this case, Object represents a Unit
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/units")
+    @HystrixCommand(fallbackMethod = "objectsFallback")
     ResponseEntity<Iterable<Object>> getAllUnits() {
         LOG.debug("Will call getAllUnits with Hystrix protection");
 
@@ -42,7 +50,15 @@ public class UnitSideService {
         return units;
     }
 
+    /**
+     * getUnitById(String unitId)
+     *
+     * GET Request to receive a Unit specified by its Identifier
+     * @param unitId: This is the Id of the Unit that is requested
+     * @return: Object - In this case, Object represents a Unit
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/units/{unitId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> getUnitById(@PathVariable String unitId) {
         LOG.debug("Will call getUnitById with Hystrix protection");
 
@@ -54,7 +70,15 @@ public class UnitSideService {
         return unit;
     }
 
+    /**
+     * createUnit(Object unit)
+     *
+     * POST Request to create a new Unit
+     * @param unit: This is the Unit object that has to be added
+     * @return: Object - In this case, Object represents the added Unit object
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/units")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> createUnit(@RequestBody Object unit) {
         LOG.debug("Will call createUnit with Hystrix protection");
 
@@ -66,7 +90,17 @@ public class UnitSideService {
         return resultUnit;
     }
 
+    /**
+     * updateUnit(..)
+     *
+     * PUT Request to update an existing Unit
+     * @param unitId: The Id of the Unit that needs to be updated
+     * @param unit: The Unit object with the updated content that needs to be saved
+     * @param headers: The Http Headers (the back-end needs this)
+     * @return: Object - In this case, Object represents the updated Unit object
+     */
     @RequestMapping(method = RequestMethod.PUT, value = "/units/{unitId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> updateUnit(@PathVariable String unitId, @RequestBody Object unit, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call updateUnit with Hystrix protection");
 
@@ -79,7 +113,16 @@ public class UnitSideService {
         return resultUnit;
     }
 
+    /**
+     * deleteUnit(..)
+     *
+     * DELETE Request to delete an existing Unit
+     * @param unitId: The Id of the Unit that needs to be deleted
+     * @param headers: The Http Headers (the back-end needs this)
+     * @return: Object - In this case, Object represents the deleted Unit object
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/units/{unitId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> deleteUnit(@PathVariable String unitId, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call deleteUnit with Hystrix protection");
 
@@ -101,6 +144,7 @@ public class UnitSideService {
      * Forwards for CONSULTANT
      */
     @RequestMapping(method = RequestMethod.GET, value = "/consultants")
+    @HystrixCommand(fallbackMethod = "objectsFallback")
     ResponseEntity<Iterable<Object>> getAllConsultants() {
         LOG.debug("Will call getAllConsultants with Hystrix protection");
 
@@ -115,6 +159,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/consultants/{consultantId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> getConsultantById(@PathVariable String consultantId) {
         LOG.debug("Will call getConsultantById with Hystrix protection");
 
@@ -127,6 +172,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/consultants")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> createConsultant(@RequestBody Object consultant) {
         LOG.debug("Will call createConsultant with Hystrix protection");
 
@@ -139,6 +185,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/consultants/{consultantId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> updateConsultant(@PathVariable String consultantId, @RequestBody Object consultant, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call updateConsultant with Hystrix protection");
 
@@ -152,6 +199,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/consultants/{consultantId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> deleteConsultant(@PathVariable String consultantId, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call deleteConsultant with Hystrix protection");
 
@@ -172,6 +220,7 @@ public class UnitSideService {
      * Forwards for CONTRACT
      */
     @RequestMapping(method = RequestMethod.GET, value = "/contracts")
+    @HystrixCommand(fallbackMethod = "objectsFallback")
     ResponseEntity<Iterable<Object>> getAllContracts() {
         LOG.debug("Will call getAllContracts with Hystrix protection");
 
@@ -186,6 +235,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/contracts/{contractId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> getContractById(@PathVariable String contractId) {
         LOG.debug("Will call getContractById with Hystrix protection");
 
@@ -198,6 +248,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/contracts")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> createContract(@RequestBody Object contract) {
         LOG.debug("Will call createContract with Hystrix protection");
 
@@ -210,6 +261,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/contracts/{contractId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> updateContract(@PathVariable String contractId, @RequestBody Object contract, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call updateContract with Hystrix protection");
 
@@ -223,6 +275,7 @@ public class UnitSideService {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/contracts/{contractId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> deleteContract(@PathVariable String contractId, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call deleteContract with Hystrix protection");
 
@@ -233,6 +286,31 @@ public class UnitSideService {
         HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<Object> resultContract = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Object.class);
         return resultContract;
+    }
+
+
+
+    ResponseEntity<Object> objectFallback(String objectId) {
+        return objectFallback();
+    }
+    ResponseEntity<Object> objectFallback(Object object) {
+        return objectFallback();
+    }
+    ResponseEntity<Object> objectFallback(String objectId, Object object, HttpHeaders headers) {
+        return objectFallback();
+    }
+    ResponseEntity<Object> objectFallback(String objectId, HttpHeaders headers) {
+        return objectFallback();
+    }
+
+    ResponseEntity<Object> objectFallback() {
+        LOG.warn("Using fallback method for unit-side-service");
+        return new ResponseEntity<Object>(HttpStatus.BAD_GATEWAY);
+    }
+
+    ResponseEntity<Iterable<Object>> objectsFallback() {
+        LOG.warn("Using fallback method for unit-side-service");
+        return new ResponseEntity<Iterable<Object>>(HttpStatus.BAD_GATEWAY);
     }
 
 }

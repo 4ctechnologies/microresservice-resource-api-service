@@ -1,13 +1,11 @@
 package be.foreseegroup.micro.resourceservice.resourceapi.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,6 +31,7 @@ public class CustomerSideService {
      * Forwards for CUSTOMER
      */
     @RequestMapping(method = RequestMethod.GET, value = "/customers")
+    @HystrixCommand(fallbackMethod = "objectsFallback")
     ResponseEntity<Iterable<Object>> getAllCustomers() {
         LOG.debug("Will call getAllCustomers with Hystrix protection");
 
@@ -47,6 +46,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/customers/{customerId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> getCustomerById(@PathVariable String customerId) {
         LOG.debug("Will call getCustomerById with Hystrix protection");
 
@@ -59,6 +59,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/customers")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> createCustomer(@RequestBody Object customer) {
         LOG.debug("Will call createCustomer with Hystrix protection");
 
@@ -71,6 +72,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/customers/{customerId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> updateCustomer(@PathVariable String customerId, @RequestBody Object customer, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call updateCustomer with Hystrix protection");
 
@@ -84,6 +86,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/customers/{customerId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> deleteCustomer(@PathVariable String customerId, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call deleteCustomer with Hystrix protection");
 
@@ -105,6 +108,7 @@ public class CustomerSideService {
      * Forwards for CONSULTANT
      */
     @RequestMapping(method = RequestMethod.GET, value = "/consultants")
+    @HystrixCommand(fallbackMethod = "objectsFallback")
     ResponseEntity<Iterable<Object>> getAllConsultants() {
         LOG.debug("Will call getAllConsultants with Hystrix protection");
 
@@ -119,6 +123,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/consultants/{consultantId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> getConsultantById(@PathVariable String consultantId) {
         LOG.debug("Will call getConsultantById with Hystrix protection");
 
@@ -131,6 +136,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/consultants")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> createConsultant(@RequestBody Object consultant) {
         LOG.debug("Will call createConsultant with Hystrix protection");
 
@@ -143,6 +149,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/consultants/{consultantId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> updateConsultant(@PathVariable String consultantId, @RequestBody Object consultant, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call updateConsultant with Hystrix protection");
 
@@ -156,6 +163,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/consultants/{consultantId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> deleteConsultant(@PathVariable String consultantId, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call deleteConsultant with Hystrix protection");
 
@@ -176,6 +184,7 @@ public class CustomerSideService {
      * Forwards for ASSIGNMENT
      */
     @RequestMapping(method = RequestMethod.GET, value = "/assignments")
+    @HystrixCommand(fallbackMethod = "objectsFallback")
     ResponseEntity<Iterable<Object>> getAllAssignments() {
         LOG.debug("Will call getAllAssignments with Hystrix protection");
 
@@ -190,6 +199,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/assignments/{assignmentId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> getAssignmentById(@PathVariable String assignmentId) {
         LOG.debug("Will call getAssignmentById with Hystrix protection");
 
@@ -202,6 +212,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/assignments")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> createAssignment(@RequestBody Object assignment) {
         LOG.debug("Will call createAssignment with Hystrix protection");
 
@@ -214,6 +225,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/assignments/{assignmentId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> updateAssignment(@PathVariable String assignmentId, @RequestBody Object assignment, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call updateAssignment with Hystrix protection");
 
@@ -227,6 +239,7 @@ public class CustomerSideService {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/assignments/{assignmentId}")
+    @HystrixCommand(fallbackMethod = "objectFallback")
     ResponseEntity<Object> deleteAssignment(@PathVariable String assignmentId, @RequestHeader HttpHeaders headers) {
         LOG.debug("Will call deleteAssignment with Hystrix protection");
 
@@ -237,6 +250,29 @@ public class CustomerSideService {
         HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<Object> resultAssignment = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Object.class);
         return resultAssignment;
+    }
+
+    ResponseEntity<Object> objectFallback(String objectId) {
+        return objectFallback();
+    }
+    ResponseEntity<Object> objectFallback(Object object) {
+        return objectFallback();
+    }
+    ResponseEntity<Object> objectFallback(String objectId, Object object, HttpHeaders headers) {
+        return objectFallback();
+    }
+    ResponseEntity<Object> objectFallback(String objectId, HttpHeaders headers) {
+        return objectFallback();
+    }
+
+    ResponseEntity<Object> objectFallback() {
+        LOG.warn("Using fallback method for customer-side-service");
+        return new ResponseEntity<Object>(HttpStatus.BAD_GATEWAY);
+    }
+
+    ResponseEntity<Iterable<Object>> objectsFallback() {
+        LOG.warn("Using fallback method for customer-side-service");
+        return new ResponseEntity<Iterable<Object>>(HttpStatus.BAD_GATEWAY);
     }
 
 }
